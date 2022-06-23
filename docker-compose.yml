@@ -1,0 +1,15 @@
+version: "3"
+services:
+  bcali-dapps-handson:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: bcali-dapps-handson
+    tty: true
+    container_name: bcali-dapps-handson-app
+    stdin_open: true
+    ports:
+      - 8545:8545
+      - 3000:3000
+    volumes:
+      - .:/app
