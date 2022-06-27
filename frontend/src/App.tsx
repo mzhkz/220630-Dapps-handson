@@ -106,7 +106,7 @@ class App extends React.Component<{}, AppState> {
     for (let i = 1; i <= totalSupply.toNumber(); i++) {
       const tokenURI = await this.state.contract?.tokenURI(i);
       const tokenOwner = await this.state.contract?.ownerOf(i);
-      const { data, error } = await axios.get<TokenMetadata>(tokenURI);
+      const { data } = await axios.get<TokenMetadata>(tokenURI);
       if (data) {
         this.state.tokens[i - 1] = [
           data.name,

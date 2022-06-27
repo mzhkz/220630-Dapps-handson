@@ -12,7 +12,7 @@ async function main() {
     "https://handsondappmoz.blob.core.windows.net/dapps-nft-images/"
   );
   await mynft.deployed();
-  await mynft.mintTo(deployer.address, "NFT_1.jpg", "My FIRST NFT");
+  await mynft.mintTo(deployer.address, "1.json");
   const currentId = await mynft.totalSupply();
   const mintedTokenURI = await mynft.tokenURI(currentId);
   console.log(`MyNFT ERC721 was deployed to: ${mynft.address} at ${currentId}`);

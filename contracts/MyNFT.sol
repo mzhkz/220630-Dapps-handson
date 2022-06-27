@@ -22,14 +22,12 @@ contract MyNFT is ERC721URIStorage, Ownable {
 
     function mintTo(
         address _to,
-        string memory _tokenURL,
-        string memory _description
+        string memory _tokenURL
     ) public onlyOwner {
         _nextTokenId.increment();
         uint256 currentTokenId = _nextTokenId.current();
         _safeMint(_to, currentTokenId);
         _setTokenURI(currentTokenId, _tokenURL);
-        _setDescription(currentTokenId, _description);
         console.log("Minted at id:", currentTokenId);
     }
 
