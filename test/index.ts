@@ -22,20 +22,14 @@ describe("Mint Token", () => {
   it("check totalsupply", async () => {
     // ここにはトークンを発行し、totalSupplyが+1されているかを確認します。
     expect(await contract.totalSupply()).to.equal(0);
-    await contract.mintTo(await deployer.getAddress(), "NFT_1.jpg", "test");
+    await contract.mintTo(await deployer.getAddress(), "1.json");
     expect(await contract.totalSupply()).to.equal(1);
   });
   it("check metadata (uri and description)", async () => {
-    const _testPath = "NFT_1.jpg";
-    const _testDescription = "test descripton";
+    const _testPath = "1.json";
     expect(await contract.totalSupply()).to.equal(0);
-    await contract.mintTo(
-      await deployer.getAddress(),
-      _testPath,
-      _testDescription
-    );
+    await contract.mintTo(await deployer.getAddress(), _testPath);
     const tokenId = await contract.totalSupply();
     expect(await contract.tokenURI(tokenId)).to.include(_testPath);
-    expect(await contract.tokenDescription(tokenId)).to.equal(_testDescription);
   });
 });
