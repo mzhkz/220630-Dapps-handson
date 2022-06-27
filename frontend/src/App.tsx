@@ -1,4 +1,5 @@
 import React from "react";
+import axios, { AxiosRequestConfig } from "axios";
 import { ethers } from "ethers";
 import { MetaMaskInpageProvider } from "@metamask/providers";
 import MyNFTArtifact from "./contracts/MyNFT.json";
@@ -36,6 +37,12 @@ interface AppState {
   mintFormDescription: string | undefined;
 }
 
+interface TokenMetadata {
+  name: string;
+  description: string;
+  image: string;
+}
+
 class App extends React.Component<{}, AppState> {
   state: AppState = {
     provider: undefined,
@@ -61,7 +68,7 @@ class App extends React.Component<{}, AppState> {
     const ethereum = (window as any).ethereum;
     await ethereum.request({ method: "eth_requestAccounts" });
     if (ethereum.networkVersion !== NETWORK_ID) {
-      alert("アカウントが切り替わりました。ページを再読み込みしてください。");
+      alert("ネットワークが異なります");
       return;
     }
     ethereum.on("accountsChanged", () => {
@@ -99,17 +106,25 @@ class App extends React.Component<{}, AppState> {
     for (let i = 1; i <= totalSupply.toNumber(); i++) {
       const tokenURI = await this.state.contract?.tokenURI(i);
       const tokenOwner = await this.state.contract?.ownerOf(i);
-      const tokenDescription = await this.state.contract?.tokenDescription(i);
-      this.state.tokens[i - 1] = [tokenURI, tokenOwner, tokenDescription];
+      const { data, error } = await axios.get<TokenMetadata>(tokenURI);
+      if (data) {
+        this.state.tokens[i - 1] = [
+          data.name,
+          data.description,
+          data.image,
+          tokenOwner,
+        ];
+      } else {
+        alert("Metadataの読み込みに失敗しました");
+      }
     }
   }
 
-  async _mint(_tokenURI: string, _description: string) {
+  async _mint(_tokenURI: string) {
     try {
       const tx = await this.state.contract?.mintTo(
         this.state.signerAddress,
-        _tokenURI,
-        _description
+        _tokenURI
       );
       const receipt = await tx.wait();
       if (receipt.status === 0) {
@@ -124,13 +139,10 @@ class App extends React.Component<{}, AppState> {
   handleMint(event: any) {
     event.preventDefault();
     const _mintFormURI = this.state.mintFormURI;
-    const _mintFormDescription = this.state.mintFormDescription;
-    if (_mintFormURI && _mintFormDescription) {
-      this._mint(_mintFormURI, _mintFormDescription)
+    if (_mintFormURI) {
+      this._mint(_mintFormURI)
         .then(() => this._fetchTokens())
-        .then(() => {
-          this.setState({ showMintModal: false });
-        });
+        .then(() => this.setState({ showMintModal: false }));
     }
   }
   openMintedModal() {
@@ -217,18 +229,9 @@ class App extends React.Component<{}, AppState> {
                   <Form.Group className="mb-3">
                     <Form.Label>Image URI path</Form.Label>
                     <Form.Control
-                      placeholder="path"
+                      placeholder="Metadata URI Path"
                       onChange={(e: any) => {
                         this.setState({ mintFormURI: e.target.value });
-                      }}
-                    />
-                  </Form.Group>
-                  <Form.Group className="mb-3">
-                    <Form.Label>What about is this</Form.Label>
-                    <Form.Control
-                      placeholder="description"
-                      onChange={(e: any) => {
-                        this.setState({ mintFormDescription: e.target.value });
                       }}
                     />
                   </Form.Group>
@@ -259,13 +262,15 @@ class App extends React.Component<{}, AppState> {
               {this.state.tokens.map((tokenMetadata, index) => (
                 <Col key={index}>
                   <Card className="m-3">
-                    <Card.Img variant="top" src={tokenMetadata[0]} />
+                    <Card.Img variant="top" src={tokenMetadata[2]} />
                     <Card.Body>
-                      <Card.Title>#{index + 1}</Card.Title>
+                      <Card.Title>
+                        #{index + 1} {tokenMetadata[0]}
+                      </Card.Title>
                       <Card.Text>
-                        Owner: <code>{tokenMetadata[1]}</code>
+                        Owner: <code>{tokenMetadata[3]}</code>
                       </Card.Text>
-                      <Card.Text>{tokenMetadata[2]}</Card.Text>
+                      <Card.Text>{tokenMetadata[1]}</Card.Text>
                       {tokenMetadata[1] === this.state.signerAddress && (
                         <Button variant="primary">Transfar</Button>
                       )}
