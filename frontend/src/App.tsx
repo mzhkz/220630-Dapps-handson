@@ -227,7 +227,7 @@ class App extends React.Component<{}, AppState> {
                 {/* Formを配置します。 */}
                 <Form>
                   <Form.Group className="mb-3">
-                    <Form.Label>Image URI path</Form.Label>
+                    <Form.Label>Metadata URI path</Form.Label>
                     <Form.Control
                       placeholder="Metadata URI Path"
                       onChange={(e: any) => {
@@ -271,7 +271,7 @@ class App extends React.Component<{}, AppState> {
                         Owner: <code>{tokenMetadata[3]}</code>
                       </Card.Text>
                       <Card.Text>{tokenMetadata[1]}</Card.Text>
-                      {tokenMetadata[1] === this.state.signerAddress && (
+                      {tokenMetadata[3] === this.state.signerAddress && (
                         <Button variant="primary">Transfar</Button>
                       )}
                     </Card.Body>
