@@ -7,8 +7,6 @@ describe("Mint Token", () => {
   let deployer: Signer;
   let contract: Contract;
   beforeEach(async () => {
-    // it関数を実行する前に、毎度この関数が呼ばれます。
-    // ここにはスマートコントラクトをデプロイするコードを記述します。
     const accounts: Signer[] = await ethers.getSigners();
     deployer = accounts[0];
     const MyNFT: ContractFactory = await ethers.getContractFactory("MyNFT");
@@ -20,7 +18,6 @@ describe("Mint Token", () => {
     await contract.deployed();
   });
   it("check totalsupply", async () => {
-    // ここにはトークンを発行し、totalSupplyが+1されているかを確認します。
     expect(await contract.totalSupply()).to.equal(0);
     await contract.mintTo(await deployer.getAddress(), "1.json");
     expect(await contract.totalSupply()).to.equal(1);
