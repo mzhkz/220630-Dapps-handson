@@ -7,4 +7,9 @@ typechain
 #Hardhat files
 cache
 artifacts
+<<<<<<< HEAD
 .DS_Store
+=======
+abis
+frontend/src/contracts
+>>>>>>> 5ea57af093ef4abc1f98625cb3bbe6a9ffa24383

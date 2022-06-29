@@ -2,8 +2,6 @@ import React from "react";
 import axios from "axios";
 import { ethers } from "ethers";
 import { MetaMaskInpageProvider } from "@metamask/providers";
-import MyNFTArtifact from "./contracts/MyNFT.json";
-import MyNFTAddress from "./contracts/MyNFT-address.json";
 import {
   Navbar,
   Container,
@@ -15,6 +13,10 @@ import {
   Modal,
   Form,
 } from "react-bootstrap";
+
+import MyNFTArtifact from "./contracts/MyNFT.json";
+import MyNFTAddress from "./contracts/MyNFT-address.json";
+
 import "bootstrap/dist/css/bootstrap.min.css";
 declare global {
   interface Window {
@@ -136,7 +138,7 @@ class App extends React.Component<{}, AppState> {
     }
   }
 
-  handleMint(event: any) {
+  onClickSubmitMintForm(event: any) {
     event.preventDefault();
     const _mintFormURI = this.state.mintFormURI;
     if (_mintFormURI) {
@@ -145,7 +147,7 @@ class App extends React.Component<{}, AppState> {
         .then(() => this.setState({ showMintModal: false }));
     }
   }
-  openMintedModal() {
+  onClickOpenMintForm() {
     this.setState({
       mintFormURI: "",
       mintFormDescription: "",
@@ -205,7 +207,7 @@ class App extends React.Component<{}, AppState> {
                 <Card.Body className="text-center">
                   <Button
                     variant="primary"
-                    onClick={() => this.openMintedModal()}
+                    onClick={() => this.onClickOpenMintForm()}
                   >
                     NFTを発行
                   </Button>
@@ -246,7 +248,7 @@ class App extends React.Component<{}, AppState> {
                 </Button>
                 <Button
                   onClick={(e) => {
-                    this.handleMint(e);
+                    this.onClickSubmitMintForm(e);
                   }}
                 >
                   発行(MINT)
